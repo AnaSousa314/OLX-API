@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const fileupload = require('express-fileupload');
 
+const apiRoutes = require('./src/routes');
+
 mongoose.connect(process.env.DATABASE, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -24,9 +26,7 @@ server.use(fileupload());
 
 server.use(express.static(path.join(__dirname, './public')));
 
-server.get('/ping', (req,res)=>{
-  res.json({pong:true})
-})
+server.use('/', apiRoutes);
 
 server.listen(process.env.PORT, ()=>{
   console.log(`🔥🔥🔥Server started at http://localhost:${process.env.PORT} `);
