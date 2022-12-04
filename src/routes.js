@@ -25,10 +25,4 @@ router.get('/ad/item', AdsController.getItem);
 router.post('/ad/:id', AdsController.editAction);
 
 
-
-
-
-
-
-
 module.exports = router;
