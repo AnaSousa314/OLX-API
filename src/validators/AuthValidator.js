@@ -15,7 +15,7 @@ module.exports = {
       errorMessage: 'Email inválido',
       notEmpty: true
     },
-    password: {
+    passwordHash: {
       isLength:{
         options: { min: 2}
       },
