@@ -6,12 +6,43 @@ const User = require("../models/User");
 const State = require("../models/State");
 
 module.exports = {
-  signin: async (req, res) => {},
+  signin: async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: errors.mapped() });
+      return;
+    }
+
+    const data = matchedData(req);
+
+    // Validando o email
+    const user = await User.findOne({ email: data.email});
+    if(!user){
+      res.status(401).json({ error: "E-mail e/ou senha errados!"});
+      return
+    }
+
+    // Validando a senha
+    const match = await bcrypt.compare(data.passwordHash, user.passwordHash);
+    if (!match) {
+      res.status(400).json({ error: "E-mail e/ou senha errados!"});
+      return
+    }
+
+    const payload = (Date.now() + Math.random()).toString();
+    const token = await bcrypt.hash(payload, 10);
+
+    user.token = token;
+    await user.save();
+
+    res.status(200).json({ token, email: data.email});
+
+  },
 
   signup: async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.json({ error: errors.mapped() });
+      res.status(400).json({ error: errors.mapped() });
       return;
     }
 
